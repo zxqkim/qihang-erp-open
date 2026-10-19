@@ -6830,6 +6830,15 @@ INSERT INTO `sys_menu` VALUES (2179, '智能分析', 2177, 2, 'analysis', 'ai/an
 -- 通知渠道配置菜单（放在系统设置 parent_id=5 下，order_num=3）
 INSERT INTO `sys_menu` VALUES (2180, '通知渠道', 5, 3, 'alertChannel', 'system/alertChannel/index', '', 1, 0, 'C', '0', '0', '', 'message', 'admin', NOW(), '', NULL, '通知渠道配置');
 
+-- -------- 补齐前端跳转所需的隐藏路由菜单（子菜单需挂在 menu_type=M 目录下，buildMenus 才会递归） --------
+INSERT INTO `sys_menu` VALUES (2181, '字典数据', 5, 91, 'dict/data/:dictId', 'system/dict/data', '', 1, 0, 'C', '1', '0', 'system:dict:list', 'dict', 'admin', NOW(), '', NULL, '字典数据列表');
+-- 角色授权用户列表（角色管理“分配用户”跳转）
+INSERT INTO `sys_menu` VALUES (2182, '角色授权用户', 5, 92, 'role/authUser/:roleId', 'system/role/authUser', '', 1, 0, 'C', '1', '0', 'system:role:edit', 'peoples', 'admin', NOW(), '', NULL, '分配用户');
+-- 角色选择用户（authUser 页“添加用户”跳转）
+INSERT INTO `sys_menu` VALUES (2183, '选择用户', 5, 93, 'role/selectUser/:roleId', 'system/role/selectUser', '', 1, 0, 'C', '1', '0', 'system:role:edit', 'peoples', 'admin', NOW(), '', NULL, '选择用户');
+INSERT INTO `sys_menu` VALUES (2184, '商品库新增', 4, 103, 'product_lib/create_new', 'goods/product_lib/create_new', '', 1, 0, 'C', '1', '0', '', 'button', 'admin', NOW(), '', NULL, '商品库新增');
+INSERT INTO `sys_menu` VALUES (2185, '云仓入库新增', 9, 32, 'cloud_stock_in_create', 'wms/stockIn/create.vue', '', 1, 0, 'C', '1', '0', '', 'button', 'admin', NOW(), '', NULL, '云仓入库新增');
+
 
 
 

@@ -158,6 +158,11 @@ function loadView(view: string) {
   const key = view.replace(/\.vue$/, '')
   if (viewsMap[key]) return viewsMap[key]
   console.error(`[permission.ts] 找不到组件: ${view}，请在 viewsMap 中添加该映射`)
+  // 开发态给出更明显的提示，避免空白页
+  if (import.meta.env.DEV) {
+    // eslint-disable-next-line no-console
+    console.warn(`[permission.ts] 路由组件缺失: ${view}，将进入占位页。请在 viewsMap 中补充。`)
+  }
   return () => import('@/views/error/ComponentNotFound.vue')
 }
 

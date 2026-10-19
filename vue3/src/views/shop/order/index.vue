@@ -378,7 +378,7 @@ function handlePull() {
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        router.push({ path: '/shop/list', query: { type: 3 } })
+        router.push({ path: '/channel/shop_list', query: { type: 3 } })
       }).catch(() => {})
     } else {
       ElMessage.error(JSON.stringify(res))
@@ -402,7 +402,7 @@ function handlePullUpdate(row: any) {
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        router.push({ path: '/shop/list', query: { type: 3 } })
+        router.push({ path: '/channel/shop_list', query: { type: 3 } })
       }).catch(() => {})
     } else {
       ElMessage.error(JSON.stringify(res))

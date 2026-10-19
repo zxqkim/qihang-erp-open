@@ -132,7 +132,7 @@ function getList() {
 function handleQuery() { queryParams.pageNum = 1; getList() }
 function resetQuery() { queryParams.stockInNum = null; queryParams.vendorId = null; queryParams.stockInTime = null; handleQuery() }
 function handleSelectionChange() {}
-function handleAdd() { router.push({ path: '/stock/cloud_stock_in_create' }) }
+function handleAdd() { router.push({ path: '/wms/cloud_stock_in_create' }) }
 function handleDetail(row: any) {
   getCloudStockIn(row.id).then((res: any) => {
     Object.assign(form, res.data || {})

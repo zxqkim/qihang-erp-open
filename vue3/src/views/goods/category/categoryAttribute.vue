@@ -130,7 +130,7 @@ function handleSelectionChange(selection: any[]) {
 }
 
 function handleValue(row: any) {
-  router.push({ path: '/goods/goods_category/attributeValue', query: { attributeId: row.id, attributeName: row.name } })
+  router.push({ path: '/goods/goods_category/attribute_value', query: { attributeId: row.id, attributeName: row.name } })
 }
 
 function handleAdd() {

@@ -131,7 +131,7 @@ function handleCancelAll() {
 }
 
 function handleSelectUser() {
-  router.push('/system/role-auth/user/' + queryParams.roleId + '/select')
+  router.push('/system/role/selectUser/' + queryParams.roleId)
 }
 
 function goBack() {

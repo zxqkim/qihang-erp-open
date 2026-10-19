@@ -252,7 +252,7 @@ function submitForm() {
       createStockInEntry(params).then((res: any) => {
         if (res.code === 200) {
           ElMessage.success('入库单创建成功')
-          router.push('/purchase/purchase_ship_list')
+          router.push('/purchase/purchase_stock_in_list')
         } else {
           ElMessage.error(res.msg || '创建失败')
           submitting.value = false

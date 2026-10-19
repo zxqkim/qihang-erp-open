@@ -110,7 +110,7 @@ function resetQuery(){queryParams.outNum=null;queryParams.sourceNum=null;queryPa
 function handleSelectionChange(selection:any[]){ids.length=0;ids.push(...selection.map((item:any)=>item.id))}
 function handleAdd(){router.push({path:'/wms/stock_out/create'})}
 function handleStockOut(row:any){
-  router.push({path:'stock_out', query:{id:row.id}})
+  router.push({path:'/wms/stock_out', query:{id:row.id}})
 }
 
 onMounted(()=>{

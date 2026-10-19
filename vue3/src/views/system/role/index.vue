@@ -296,7 +296,7 @@ function handleUpdate(row: any) {
 }
 
 function handleAuthUser(row: any) {
-  router.push('/system/role-auth/user/' + row.roleId)
+  router.push('/system/role/authUser/' + row.roleId)
 }
 
 function submitForm() {

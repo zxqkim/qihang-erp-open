@@ -267,7 +267,7 @@ function handlePull() {
   pullGoodsList({ shopId: queryParams.shopId }).then((res: any) => {
     if (res.code === 1401) {
       ElMessageBox.confirm('Token已过期，需要重新授权！', '系统提示', { confirmButtonText: '前往授权', cancelButtonText: '取消', type: 'warning' })
-        .then(() => router.push({ path: '/shop/list', query: { type: props.shopType || null } })).catch(() => {})
+        .then(() => router.push({ path: '/channel/shop_list', query: { type: props.shopType || null } })).catch(() => {})
     } else if (res.code === 200) { ElMessage.success(JSON.stringify(res)); getList() }
     else ElMessage.error(res.msg)
     pullLoading.value = false
