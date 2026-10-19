@@ -1,0 +1,19 @@
+.git
+.github
+.idea
+.vscode
+**/target
+**/node_modules
+**/dist
+**/dist-ssr
+**/*.log
+docs/preview.png
+docs/*.jpg
+.DS_Store
+# 前端 vue3 有独立构建 context，从后端 context 中排除
+vue3
+# 旧版前端（本地保留，不参与构建）
+vue2
+.env
+.env.*
+!.env.example

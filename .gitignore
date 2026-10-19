@@ -38,6 +38,9 @@ build/
 .DS_Store
 .qoder
 
+### Docker 本地环境变量（含密钥，禁止提交） ###
+.env
+
 # 旧版前端（仅本地保留，不提交远程）
 vue2/
 

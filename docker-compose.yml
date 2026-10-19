@@ -1,0 +1,137 @@
+services:
+  # ============ MySQL 8 ============
+  mysql:
+    image: mysql:8.0
+    container_name: qh-erp-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Shanghai
+    # 字符集与排序规则需与 docs/qihang-erp.sql 导出源保持一致
+    command: >
+      mysqld
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_0900_ai_ci
+      --default-time-zone=+08:00
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # 仅在 mysql-data 卷首次为空时执行
+      # 注意：docs/qihang-erp.sql 已含 2373 条物流公司数据，
+      # 无需再挂 docs/init-data/erp_logistics_company-data.sql（会主键冲突）
+      - ./docs/qihang-erp.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 90s
+    networks:
+      - qh-erp-net
+    logging: &default-logging
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+
+  # ============ Redis 7 ============
+  redis:
+    image: redis:7-alpine
+    container_name: qh-erp-redis
+    restart: unless-stopped
+    command: ["sh", "-c", "exec redis-server --requirepass \"$$REDIS_PASSWORD\" --appendonly yes"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      TZ: Asia/Shanghai
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - qh-erp-net
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  # ============ 后端 erp-api（多阶段构建） ============
+  erp-api:
+    image: qihang-erp-api:4.1.0
+    build:
+      context: .
+      dockerfile: erp-api/Dockerfile
+    container_name: qh-erp-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # 覆盖为 compose 内部服务名；其余密码类变量来自 env_file
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      TZ: Asia/Shanghai
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # 应用未引入 actuator，此处用 TCP 端口探测作为就绪信号
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/6149'"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+    networks:
+      - qh-erp-net
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2g
+
+  # ============ 前端 nginx（多阶段构建） ============
+  web:
+    image: qihang-erp-web:4.1.0
+    build:
+      context: ./vue3
+      dockerfile: Dockerfile
+    container_name: qh-erp-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      erp-api:
+        condition: service_healthy
+    networks:
+      - qh-erp-net
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+
+networks:
+  qh-erp-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:
